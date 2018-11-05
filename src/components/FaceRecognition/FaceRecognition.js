@@ -18,7 +18,6 @@ const FaceRecognition = ({imageUrl, box}) => {
    }else{
      return 'Please enter image URL';
    }
-
 }
 
 

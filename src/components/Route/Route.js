@@ -6,7 +6,7 @@ import Signin from '../Signin/Signin';
 import Registration from '../Registration/Registration';
 
 
-const Route = ({route, box, imageUrl, onRouteChange, onInputChange, onButtunSubmit}) => {
+const Route = ({route, input, box, imageUrl, onRouteChange, }) => {
 
     switch (route) {
       case 'signin':
@@ -18,9 +18,9 @@ const Route = ({route, box, imageUrl, onRouteChange, onInputChange, onButtunSubm
       case 'home':
         return(
         <div>
-        <Rank />
-        <ImageLinkForm onInputChange={onInputChange} onButtunSubmit={onButtunSubmit}/>
-        <FaceRecognition box={box} imageUrl={imageUrl}/>
+          <Rank />
+          <ImageLinkForm input={input} imageUrl={imageUrl} />
+          <FaceRecognition box={box} imageUrl={imageUrl}/>
         </div>
         )
         break;
