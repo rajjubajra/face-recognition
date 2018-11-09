@@ -42,6 +42,15 @@ class App extends Component {
     }
   }
 
+  componentDidMount(){
+    fetch('http://localhost:5000')
+    .then( response => response.json())
+    .then( data => console.log(data))
+    // and .then(console.log) is same
+  }
+
+
+
   onRouteChange = (route) => {
     this.setState({route: route})
   }
