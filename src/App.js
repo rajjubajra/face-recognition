@@ -37,19 +37,34 @@ class App extends Component {
       box: {},
       route: 'signin',
       user: '',
-      entries: ''
+      entries: '',
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
 
     }
   }
 
-  componentDidMount(){
-    fetch('http://localhost:5000')
-    .then( response => response.json())
-    .then( data => console.log(data))
-    // and .then(console.log) is same
+  // componentDidMount(){
+  //   fetch('http://localhost:5000')
+  //   .then( response => response.json())
+  //   .then( data => console.log(data))
+  //   // and .then(console.log) is same
+  // }
+
+  loadUser = (data)=> {
+      this.setState({user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined
+      }})
   }
-
-
 
   onRouteChange = (route) => {
     this.setState({route: route})
@@ -80,28 +95,52 @@ class App extends Component {
   }
 
   onImageSubmit = () => {
-    console.log('click button');
-    this.setState({imageUrl: this.state.input})
+    console.log('click button', this.state.user.id);
+    this.setState({imageUrl: this.state.input});
     app.models
-      .predict(Clarifai.FACE_DETECT_MODEL,
-               this.state.imageUrl)
-        .then( response => this.displayFaceBox(this.calculateFaceLocation(response)))
-        .catch(err => console.log(err));
+      .predict(
+        Clarifai.FACE_DETECT_MODEL,
+        this.state.input)
+      .then(response => {
+        if (response) {
+          fetch('http://localhost:5000/image', {
+            method: 'put',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+               id: '123'
+              // id: this.state.user.id
+            })
+          })
+            .then(response => response.json())
+            .then(count => {
+              this.setState(Object.assign(this.state.user, { entries: count}))
+            })
+
+        }
+        this.displayFaceBox(this.calculateFaceLocation(response))
+      })
+      .catch(err => console.log(err));
   }
 
   pageRoute = (nav) => {
     switch (nav) {
       case 'signin':
-        return <Signin onRouteChange={this.onRouteChange}/>
+        return <Signin
+                loadUser={this.loadUser}
+                onRouteChange={this.onRouteChange}
+                />
         break;
       case 'register':
-        return <Registration onRouteChange={this.onRouteChange}/>
+        return <Registration
+                loadUser={this.loadUser}
+                onRouteChange={this.onRouteChange}
+                />
         break;
       case 'home':
         return(
         <div>
           <Rank
-            name={this.state.user.username}
+            name   ={this.state.user.name}
             entries={this.state.user.entries}
           />
           <ImageLinkForm

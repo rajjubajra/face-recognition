@@ -32,32 +32,124 @@ const RegistrationFrom = styled.div`
    }
 `;
 
-const Registration = ({onRouteChange}) => {
-  return(
-    <RegistrationFrom>
-        <section>
-          <div>
-              <h3>Registration Form</h3>
-              <div>
-                <input type='text' name='name' placeholder="Name" />
-              </div>
-              <div>
-                <input type='email' name='email' placeholder="Email Address" />
-              </div>
-              <div>
-                <input type='password' name='password'  placeholder="Password"/>
-              </div>
-              <div>
-                <button>Submit</button>
-              </div>
-              <div>
-                <p onClick={()=>onRouteChange('signin')}>Sign In</p>
-              </div>
-          </div>
-        </section>
-    </RegistrationFrom>
-  );
+class Registration extends React.Component{
+  constructor(){
+    super();
+    this.state = {
+      email: '',
+      pass: '',
+      name: ''
+    }
+  }
+
+  onEmailChange = (event) => {
+    this.setState({email: event.target.value});
+  }
+
+  onNamChange = (event) => {
+    this.setState({name: event.target.value})
+  }
+
+  onPasswordChange = (event) => {
+    this.setState({pass: event.target.value})
+  }
+
+  onRegisterSubmit = () => {
+    console.log(this.state);
+    fetch('http://localhost:5000/register', {
+      method: 'post',
+      headers: {'content-type' : 'application/json'},
+      body: JSON.stringify({
+        email: this.state.email,
+        pass: this.state.pass,
+        name: this.state.name
+      })
+    })
+    .then( response => response.json())
+    .then( user => {
+        if(user){
+          console.log(user);
+          this.props.loadUser(user);
+          this.props.onRouteChange('home');
+        }
+    })
+  }
+
+
+
+  render(){
+    return(
+      <RegistrationFrom>
+          <section>
+            <div>
+                <h3>Registration Form</h3>
+                <div>
+                  <input
+                    type='text'
+                    name='name'
+                    placeholder="Name"
+                    onChange={this.onNamChange}
+                  />
+                </div>
+                <div>
+                  <input
+                    type='email'
+                    name='email'
+                    placeholder="Email Address"
+                    onChange={this.onEmailChange}
+                  />
+                </div>
+                <div>
+                  <input
+                    type='password'
+                    name='pass'
+                    placeholder="Password"
+                    onChange={this.onPasswordChange}
+                  />
+                </div>
+                <div>
+                  <button
+                    onClick={this.onRegisterSubmit}>
+                    Submit
+                  </button>
+                </div>
+                <div>
+                  <p>Sign In</p>
+                </div>
+            </div>
+          </section>
+      </RegistrationFrom>
+    );
+  }
 }
+
+
+// const Registration = ({onRouteChange}) => {
+//   return(
+//     <RegistrationFrom>
+//         <section>
+//           <div>
+//               <h3>Registration Form</h3>
+//               <div>
+//                 <input type='text' name='name' placeholder="Name" />
+//               </div>
+//               <div>
+//                 <input type='email' name='email' placeholder="Email Address" />
+//               </div>
+//               <div>
+//                 <input type='password' name='password'  placeholder="Password"/>
+//               </div>
+//               <div>
+//                 <button>Submit</button>
+//               </div>
+//               <div>
+//                 <p onClick={()=>onRouteChange('signin')}>Sign In</p>
+//               </div>
+//           </div>
+//         </section>
+//     </RegistrationFrom>
+//   );
+// }
 
 
 export default Registration;

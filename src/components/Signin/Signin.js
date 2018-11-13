@@ -28,25 +28,107 @@ const SigninForm = styled.div`
     }
 `;
 
-const Signin = ({onRouteChange}) => {
-  return(
-    <SigninForm>
-        <section>
-          <div>
-              <h3>Sign in Form</h3>
+
+class Signin extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      signInEmail: '',
+      signInPassword: ''
+    }
+  }
+
+  onEmailChange = (event) => {
+    this.setState({signInEmail: event.target.value} );
+  }
+
+  onPasswordChange = (event) => {
+    this.setState({signInPassword: event.target.value});
+  }
+
+  onSubmitSignin = () => {
+    console.log(this.state);
+    fetch('http://localhost:5000/signin' , {
+      method: 'post',
+      headers: {'Content-Type' : 'application/json'},
+      body: JSON.stringify({
+        email: this.state.signInEmail,
+        password: this.state.signInPassword
+      })
+    })
+    .then( response => response.json())
+    .then( data  =>
+      {
+        switch (data) {
+          case 'success':
+            this.props.onRouteChange('home');
+            console.log('login success');
+            break;
+          default:
+            this.props.onRouteChange('signin');
+            console.log('no user and password');
+        }
+      // if(data === 'success'){
+      //   console.log('success');
+      //   this.props.onRouteChange('home');
+      // }
+    })
+
+    //this.props.onRouteChange('home');
+
+  }
+
+  render(){
+    return(
+        <SigninForm>
+            <section>
               <div>
-                <input type='email' name='email' placeholder="Email Address" />
+                  <h3>Sign in Form</h3>
+                  <div>
+                    <input
+                    type='email'
+                    name='email'
+                    placeholder="Email Address"
+                    onChange={this.onEmailChange}/>
+                  </div>
+                  <div>
+                    <input
+                    type='password'
+                    name='password'
+                    placeholder="Password"
+                    onChange={this.onPasswordChange}
+                    />
+                  </div>
+                  <div>
+                    <button onClick={this.onSubmitSignin} >Sign In</button>
+                  </div>
               </div>
-              <div>
-                <input type='password' name='password'  placeholder="Password"/>
-              </div>
-              <div>
-                <button onClick={() => onRouteChange('home')} >Sing In</button>
-              </div>
-          </div>
-        </section>
-    </SigninForm>
-  );
+            </section>
+        </SigninForm>
+      );
+  }
 }
+
+
+// const Signin = ({onRouteChange}) => {
+//   return(
+//     <SigninForm>
+//         <section>
+//           <div>
+//               <h3>Sign in Form</h3>
+//               <div>
+//                 <input type='email' name='email' placeholder="Email Address" />
+//               </div>
+//               <div>
+//                 <input type='password' name='password'  placeholder="Password"/>
+//               </div>
+//               <div>
+//                 <button onClick={() => onRouteChange('home')} >Sing In</button>
+//               </div>
+//           </div>
+//         </section>
+//     </SigninForm>
+//   );
+// }
 
 export default Signin;

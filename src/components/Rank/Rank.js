@@ -8,10 +8,10 @@ const Rankblock = styled.div`
   margin-top: 30px;
 `;
 
-const Rank = () => {
+const Rank = ({name, entries}) => {
   return(
     <Rankblock>
-    {'Name, your current rank is #5'}
+    {`${name}, your current entry count is ${entries}`}
     </Rankblock>
   );
 }
