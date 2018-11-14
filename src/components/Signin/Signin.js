@@ -57,22 +57,34 @@ class Signin extends React.Component{
       })
     })
     .then( response => response.json())
-    .then( data  =>
-      {
-        switch (data) {
-          case 'success':
-            this.props.onRouteChange('home');
-            console.log('login success');
-            break;
-          default:
-            this.props.onRouteChange('signin');
-            console.log('no user and password');
-        }
-      // if(data === 'success'){
-      //   console.log('success');
-      //   this.props.onRouteChange('home');
-      // }
+    .then( user => {
+      console.log('user detail: ',user);
+      if(user.id){
+        this.props.loadUser(user);
+        this.props.onRouteChange('home');
+        console.log('login success');
+      }else{
+        this.props.onRouteChange('signin');
+        console.log('user / password do not match')
+      }
+
     })
+    // .then( data  =>
+    //   {
+    //     switch (data) {
+    //       case 'success':
+    //         this.props.onRouteChange('home');
+    //         console.log('login success');
+    //         break;
+    //       default:
+    //         this.props.onRouteChange('signin');
+    //         console.log('no user and password');
+    //     }
+    //   // if(data === 'success'){
+    //   //   console.log('success');
+    //   //   this.props.onRouteChange('home');
+    //   // }
+    // })
 
     //this.props.onRouteChange('home');
 

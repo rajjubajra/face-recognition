@@ -36,7 +36,6 @@ class App extends Component {
       imageUrl: '',
       box: {},
       route: 'signin',
-      user: '',
       entries: '',
       user: {
         id: '',
@@ -67,7 +66,8 @@ class App extends Component {
   }
 
   onRouteChange = (route) => {
-    this.setState({route: route})
+    this.setState({route: route});
+    this.setState({imageUrl: ''});
   }
 
   calculateFaceLocation = (data) => {
@@ -82,6 +82,7 @@ class App extends Component {
         rightCol: width - ( clarifaiFace.right_col - width),
         bottomRow: height - (clarifaiFace.bottom_row - height)
       }
+
   }
 
   displayFaceBox = (box) => {
@@ -95,7 +96,7 @@ class App extends Component {
   }
 
   onImageSubmit = () => {
-    console.log('click button', this.state.user.id);
+    console.log('click button', this.state.user.id, this.state.input);
     this.setState({imageUrl: this.state.input});
     app.models
       .predict(
@@ -107,8 +108,8 @@ class App extends Component {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-               id: '123'
-              // id: this.state.user.id
+               //id: '123',
+                id: this.state.user.id
             })
           })
             .then(response => response.json())

@@ -114,7 +114,7 @@ class Registration extends React.Component{
                   </button>
                 </div>
                 <div>
-                  <p>Sign In</p>
+                  <p onClick={() => this.props.onRouteChange('signin')}>Sign In</p>
                 </div>
             </div>
           </section>
