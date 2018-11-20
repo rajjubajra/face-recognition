@@ -7,7 +7,6 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Signin from './components/Signin/Signin';
 import Registration from './components/Registration/Registration';
-import Clarifai from 'clarifai';
 import './App.css';
 
 //page background particle effects
@@ -24,18 +23,15 @@ const particleOptions =
     }
   }
 
-const app = new Clarifai.App({
-   apiKey: 'd0417d791dfa4452a2948c18ea73075d'
-  });
 
-class App extends Component {
-  constructor(){
-    super();
-    this.state = {
+
+
+const intialStat =  {
       input: '',
       imageUrl: '',
       box: {},
       route: 'signin',
+      issSignIn: false,
       entries: '',
       user: {
         id: '',
@@ -44,8 +40,12 @@ class App extends Component {
         entries: 0,
         joined: ''
       }
-
     }
+
+class App extends Component {
+  constructor(){
+    super();
+    this.state =  intialStat;
   }
 
   // componentDidMount(){
@@ -66,8 +66,13 @@ class App extends Component {
   }
 
   onRouteChange = (route) => {
+    if(route === 'signout'){
+      this.setState(intialStat);
+    }else{
+      this.setState({issSignIn: true})
+    }
+
     this.setState({route: route});
-    this.setState({imageUrl: ''});
   }
 
   calculateFaceLocation = (data) => {
@@ -98,10 +103,14 @@ class App extends Component {
   onImageSubmit = () => {
     console.log('click button', this.state.user.id, this.state.input);
     this.setState({imageUrl: this.state.input});
-    app.models
-      .predict(
-        Clarifai.FACE_DETECT_MODEL,
-        this.state.input)
+      fetch('http://localhost:5000/imageUrl', {
+        method: 'post',
+        header: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          input: this.state.input
+        })
+      })
+      .then(response => response.json())
       .then(response => {
         if (response) {
           fetch('http://localhost:5000/image', {
@@ -116,6 +125,7 @@ class App extends Component {
             .then(count => {
               this.setState(Object.assign(this.state.user, { entries: count}))
             })
+            .catch(console.log);
 
         }
         this.displayFaceBox(this.calculateFaceLocation(response))

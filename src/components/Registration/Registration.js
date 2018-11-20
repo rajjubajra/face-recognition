@@ -67,14 +67,14 @@ class Registration extends React.Component{
     })
     .then( response => response.json())
     .then( user => {
-        if(user){
-          console.log(user);
+        if(user.id){
+          console.log('user: ', user.id);
           this.props.loadUser(user);
           this.props.onRouteChange('home');
         }
     })
+    .catch(console.log);
   }
-
 
 
   render(){
